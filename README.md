@@ -17,8 +17,8 @@ Ferramenta visual para programação de um pequeno personagem que se move pela t
 |-------|-----------|---------------------------|
 | Front-end | HTML e JavaScript | Tela do jogo, botões de comando, captura das setas do teclado e animação do personagem |
 | Back-end | Python | API do sistema: cadastro e login de usuários, regras do jogo e salvamento do progresso |
-| Banco de dados | SQLite ou PostgreSQL | Guardar usuários e progresso. SQLite é mais simples para começar; PostgreSQL é mais robusto |
-| Autenticação | Login com Google (OAuth 2.0) | Permitir entrar com uma conta Google (RF02) |
+| Banco de dados | SQLite ou PostgreSQL | Guardar usuários e progresso. |
+| Autenticação | Login com Google (OAuth 2.0) | Permitir entrar com uma conta Google |
 | Testes automatizados | Pytest (Python) e Jest (JavaScript) | Testar o back-end e o front-end |
 | Versionamento | Git e GitHub | Trabalho em equipe e histórico do código |
 
