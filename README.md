@@ -1,8 +1,6 @@
-# Personagem na Tela
+# Projeto em grupo da disciplina **Oficina 2**.
 
-Projeto em grupo da disciplina **Oficina 2**.
-
-Ferramenta visual para programação de um pequeno personagem que se move pela tela usando comandos básicos: **frente, trás, direita e esquerda**. O controle pode ser feito por **botões na tela** ou pelas **setas do teclado**.
+Ferramenta visual para programação de um pequeno personagem que se move pela tela usando comandos básicos: **frente, trás, direita e esquerda**.
 
 ## Equipe
 
