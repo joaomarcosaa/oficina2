@@ -26,7 +26,7 @@ Ferramenta visual para programação de um pequeno personagem que se move pela t
 
 ## Arquitetura
 
-![Diagrama de arquitetura do sistema](imagens/diagrama-arquitetura.jpeg)
+![Diagrama de arquitetura do sistema](diagrama-arquitetura.jpeg)
 
 O usuário acessa pelo navegador. O front-end (tela do jogo e controle de entrada) conversa com a API do back-end (autenticação e lógica do jogo), que guarda os dados no banco.
 
