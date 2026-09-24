@@ -7,8 +7,8 @@ Ferramenta visual para programação de um pequeno personagem que se move pela t
 | Nome | GitHub |
 |------|--------|
 | JOAO MARCOS ARAUJO | @joaomarcosaa |
+| ROMULO AUGUSTO | @RotyDPD |
 | GABRIEL DEROLDO | @ |
-| ROMULO AUGUSTO | @ |
 | GABRIEL SUMIDA | @ |
 
 ## Tecnologias
