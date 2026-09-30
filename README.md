@@ -57,14 +57,6 @@ cd backend && pytest
 cd frontend && npm install && npm test
 ```
 
-## Documentação detalhada
-
-- [Requisitos completos e critérios de aceite](docs/requisitos.md)
-- [Arquitetura detalhada](docs/arquitetura.md)
-- [Esquema de níveis e progresso](docs/niveis.md)
-- [Guia de Git e fluxo de trabalho](docs/guia-git.md)
-- [Backlog e divisão de tarefas](docs/backlog.md)
-- [Como contribuir](CONTRIBUTING.md)
 
 ## Arquitetura
 
