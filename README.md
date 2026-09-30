@@ -17,14 +17,58 @@ Ferramenta visual para programação de um pequeno personagem que se move pela t
 |-------|-----------|---------------------------|
 | Front-end | HTML e JavaScript | Tela do jogo, botões de comando, captura das setas do teclado e animação do personagem |
 | Back-end | Python | API do sistema: cadastro e login de usuários, regras do jogo e salvamento do progresso |
-| Banco de dados | SQLite ou PostgreSQL | Guardar usuários e progresso |
-| Autenticação | Login com Google (OAuth 2.0) | Permitir entrar com uma conta Google |
+| Banco de dados | SQLite ou PostgreSQL | Guardar usuários e progresso. SQLite é mais simples para começar; PostgreSQL é mais robusto |
+| Autenticação | Login com Google (OAuth 2.0) | Permitir entrar com uma conta Google (RF02) |
 | Testes automatizados | Pytest (Python) e Jest (JavaScript) | Testar o back-end e o front-end |
 | Versionamento | Git e GitHub | Trabalho em equipe e histórico do código |
 
+## Estrutura do repositório
+
+```
+.
+├── backend/      # API em Python + testes com Pytest
+├── frontend/     # Interface HTML/JS + testes com Jest
+├── docs/         # Requisitos, arquitetura, guia de Git e backlog detalhados
+├── imagens/      # Diagrama e outras imagens
+└── .github/      # CI, templates de issue e de pull request
+```
+
+## Como rodar
+
+### Back-end
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate ou source .venv/bin/activate 
+pip install -r requirements.txt
+flask --app app.main run --debug
+```
+API em `http://127.0.0.1:5000` (teste: `/health`).
+
+### Front-end
+Abra `frontend/index.html` no navegador (ou use a extensão *Live Server* do VS Code).
+
+## Testes
+```bash
+# Back-end
+cd backend && pytest
+
+# Front-end
+cd frontend && npm install && npm test
+```
+
+## Documentação detalhada
+
+- [Requisitos completos e critérios de aceite](docs/requisitos.md)
+- [Arquitetura detalhada](docs/arquitetura.md)
+- [Esquema de níveis e progresso](docs/niveis.md)
+- [Guia de Git e fluxo de trabalho](docs/guia-git.md)
+- [Backlog e divisão de tarefas](docs/backlog.md)
+- [Como contribuir](CONTRIBUTING.md)
+
 ## Arquitetura
 
-![Diagrama de arquitetura do sistema](diagrama-arquitetura.jpeg)
+![Diagrama de arquitetura do sistema](imagens/diagrama-arquitetura.jpeg)
 
 O usuário acessa pelo navegador. O front-end (tela do jogo e controle de entrada) conversa com a API do back-end (autenticação e lógica do jogo), que guarda os dados no banco.
 
@@ -41,5 +85,4 @@ O usuário acessa pelo navegador. O front-end (tela do jogo e controle de entrad
 | RF07 | O sistema deve apresentar instruções para a realização da atividade. | Média |
 | RF08 | O sistema deve organizar a atividade em níveis de jogo com dificuldade crescente, liberando o próximo nível ao concluir o atual. | Média |
 | RF09 | O sistema deve salvar o progresso do usuário e restaurá-lo em um novo acesso. | Alta |
-
 

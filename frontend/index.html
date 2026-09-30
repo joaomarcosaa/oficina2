@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personagem</title>
+  <style>
+    body { font-family: system-ui, sans-serif; text-align: center; margin: 2rem; }
+    #grade { display: grid; grid-template-columns: repeat(10, 32px); gap: 2px; justify-content: center; margin: 1rem auto; }
+    .celula { width: 32px; height: 32px; background: #eef1f6; border-radius: 4px; }
+    .personagem { background: #2f6fed; }
+    button { margin: 2px; padding: .5rem 1rem; cursor: pointer; }
+    input { margin: .25rem; padding: .4rem; width: 200px; box-sizing: border-box; }
+    .escondido { display: none; }
+    .erro { color: #c0392b; min-height: 1.2em; }
+    .cartao { max-width: 320px; margin: 1rem auto; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
+    #barra-usuario { display: flex; justify-content: center; align-items: center; gap: .5rem; margin-bottom: 1rem; }
+    .campo-senha { position: relative; display: inline-block; margin: .25rem; }
+    .campo-senha input { margin: 0; padding-right: 2.2rem; }
+    .campo-senha button {
+      position: absolute; right: .3rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0; margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tela de login / cadastro (RF01) -->
+  <div id="tela-auth" class="cartao">
+    <div id="bloco-login">
+      <h2>Entrar</h2>
+      <p class="erro" id="erro-login"></p>
+      <input type="email" id="login-email" placeholder="E-mail"><br>
+      <span class="campo-senha">
+        <input type="password" id="login-senha" placeholder="Senha">
+        <button type="button" id="btn-ver-senha" title="Mostrar senha">👁</button>
+      </span><br>
+      <button id="btn-login">Entrar</button>
+      <p>Não tem conta? <a href="#" id="ir-para-cadastro">Cadastre-se</a></p>
+    </div>
+
+    <div id="bloco-cadastro" class="escondido">
+      <h2>Criar conta</h2>
+      <p class="erro" id="erro-cadastro"></p>
+      <input type="text" id="cad-nome" placeholder="Nome"><br>
+      <input type="email" id="cad-email" placeholder="E-mail"><br>
+      <span class="campo-senha">
+        <input type="password" id="cad-senha" placeholder="Senha (mín. 6 caracteres)">
+        <button type="button" id="btn-ver-senha-cadastro" title="Mostrar senha">👁</button>
+      </span><br>
+      <button id="btn-cadastro">Criar conta</button>
+      <p>Já tem conta? <a href="#" id="ir-para-login">Entrar</a></p>
+    </div>
+  </div>
+
+  <!-- Tela do jogo (só aparece depois de logado) -->
+  <div id="tela-jogo" class="escondido">
+    <div id="barra-usuario">
+      <span>Olá, <strong id="nome-usuario"></strong>!</span>
+      <button id="btn-sair">Sair</button>
+    </div>
+
+    <p id="instrucoes">Use as setas do teclado ou os botões para mover o personagem.</p>
+    <div id="grade"></div>
+    <div>
+      <button data-cmd="frente">⬆ Frente</button><br>
+      <button data-cmd="esquerda">⬅ Esquerda</button>
+      <button data-cmd="tras">⬇ Trás</button>
+      <button data-cmd="direita">➡ Direita</button>
+    </div>
+    <button id="reiniciar">Reiniciar</button>
+  </div>
+
+  <script src="src/movement.js"></script>
+  <script>
+    // ---------- Elementos ----------
+    const telaAuth = document.getElementById("tela-auth");
+    const telaJogo = document.getElementById("tela-jogo");
+    const blocoLogin = document.getElementById("bloco-login");
+    const blocoCadastro = document.getElementById("bloco-cadastro");
+    const erroLogin = document.getElementById("erro-login");
+    const erroCadastro = document.getElementById("erro-cadastro");
+    const nomeUsuarioEl = document.getElementById("nome-usuario");
+
+    // ---------- Chamadas à API ----------
+    async function chamarApi(caminho, opcoes = {}) {
+      const resp = await fetch(caminho, {
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin", // envia o cookie de sessão (RF01/login)
+        ...opcoes,
+      });
+      const dados = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        const erro = new Error(dados.erro || "Erro na requisição.");
+        erro.detalhes = dados.detalhes;
+        throw erro;
+      }
+      return dados;
+    }
+
+    function mostrarJogo(usuario) {
+      nomeUsuarioEl.textContent = usuario.nome;
+      telaAuth.classList.add("escondido");
+      telaJogo.classList.remove("escondido");
+      desenhar();
+    }
+
+    function mostrarAuth() {
+      telaJogo.classList.add("escondido");
+      telaAuth.classList.remove("escondido");
+    }
+
+    // Ao carregar a página, verifica se já existe uma sessão ativa (RF: manter login)
+    chamarApi("/auth/me").then(mostrarJogo).catch(() => mostrarAuth());
+
+    // ---------- Alternar entre login e cadastro ----------
+    document.getElementById("ir-para-cadastro").addEventListener("click", (e) => {
+      e.preventDefault();
+      blocoLogin.classList.add("escondido");
+      blocoCadastro.classList.remove("escondido");
+    });
+    document.getElementById("ir-para-login").addEventListener("click", (e) => {
+      e.preventDefault();
+      blocoCadastro.classList.add("escondido");
+      blocoLogin.classList.remove("escondido");
+    });
+
+    // ---------- Mostrar/ocultar senha ----------
+    const btnVerSenha = document.getElementById("btn-ver-senha");
+    const campoSenha = document.getElementById("login-senha");
+    btnVerSenha.addEventListener("click", () => {
+      const mostrando = campoSenha.type === "text";
+      campoSenha.type = mostrando ? "password" : "text";
+      btnVerSenha.textContent = mostrando ? "👁" : "🙈";
+      btnVerSenha.title = mostrando ? "Mostrar senha" : "Ocultar senha";
+    });
+
+    const btnVerSenhaCadastro = document.getElementById("btn-ver-senha-cadastro");
+    const campoSenhaCadastro = document.getElementById("cad-senha");
+    btnVerSenhaCadastro.addEventListener("click", () => {
+      const mostrando = campoSenhaCadastro.type === "text";
+      campoSenhaCadastro.type = mostrando ? "password" : "text";
+      btnVerSenhaCadastro.textContent = mostrando ? "👁" : "🙈";
+      btnVerSenhaCadastro.title = mostrando ? "Mostrar senha" : "Ocultar senha";
+    });
+
+    // ---------- Login ----------
+    document.getElementById("btn-login").addEventListener("click", async () => {
+      erroLogin.textContent = "";
+      const email = document.getElementById("login-email").value.trim();
+      const senha = document.getElementById("login-senha").value;
+      try {
+        const usuario = await chamarApi("/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ email, senha }),
+        });
+        mostrarJogo(usuario);
+      } catch (erro) {
+        erroLogin.textContent = erro.message;
+      }
+    });
+
+    // ---------- Cadastro (RF01) ----------
+    document.getElementById("btn-cadastro").addEventListener("click", async () => {
+      erroCadastro.textContent = "";
+      const nome = document.getElementById("cad-nome").value.trim();
+      const email = document.getElementById("cad-email").value.trim();
+      const senha = document.getElementById("cad-senha").value;
+      try {
+        await chamarApi("/auth/register", {
+          method: "POST",
+          body: JSON.stringify({ nome, email, senha }),
+        });
+        // Após cadastrar, faz login automaticamente.
+        const usuario = await chamarApi("/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ email, senha }),
+        });
+        mostrarJogo(usuario);
+      } catch (erro) {
+        const detalhes = erro.detalhes ? Object.values(erro.detalhes).join(" ") : "";
+        erroCadastro.textContent = detalhes || erro.message;
+      }
+    });
+
+    // ---------- Sair ----------
+    document.getElementById("btn-sair").addEventListener("click", async () => {
+      await chamarApi("/auth/logout", { method: "POST" });
+      mostrarAuth();
+    });
+
+    // ---------- Jogo (RF03-RF06) ----------
+    const L = { largura: 10, altura: 10 };
+    const inicio = { x: 0, y: 0 };
+    let pos = { ...inicio };
+    const grade = document.getElementById("grade");
+
+    function desenhar() {
+      grade.innerHTML = "";
+      for (let y = 0; y < L.altura; y++)
+        for (let x = 0; x < L.largura; x++) {
+          const c = document.createElement("div");
+          c.className = "celula" + (x === pos.x && y === pos.y ? " personagem" : "");
+          grade.appendChild(c);
+        }
+    }
+    function executar(cmd) { pos = mover(pos, cmd, L); desenhar(); }
+
+    document.querySelectorAll("[data-cmd]").forEach(b =>
+      b.addEventListener("click", () => executar(b.dataset.cmd)));
+    document.addEventListener("keydown", e => {
+      if (telaJogo.classList.contains("escondido")) return; // só move se o jogo estiver visível
+      const cmd = teclaParaComando(e.key);
+      if (cmd) { e.preventDefault(); executar(cmd); }
+    });
+    document.getElementById("reiniciar").addEventListener("click", () => { pos = { ...inicio }; desenhar(); });
+  </script>
+</body>
+</html>
