@@ -16,6 +16,10 @@ def create_app(config=None):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     # Em produção, defina a variável de ambiente SECRET_KEY com um valor seguro.
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "chave-de-desenvolvimento-trocar-em-producao")
+    app.config["GOOGLE_CLIENT_ID"] = os.environ.get(
+        "GOOGLE_CLIENT_ID",
+        "779651209162-6b35rab7i0p6v32rgdurg6eqv14p1reg.apps.googleusercontent.com",
+    )
     if config:
         app.config.update(config)
 

@@ -46,7 +46,15 @@ flask --app app.main run --debug
 API em `http://127.0.0.1:5000` (teste: `/health`).
 
 ### Front-end
-Abra `frontend/index.html` no navegador (ou use a extensão *Live Server* do VS Code).
+Com o back-end em execução, acesse `http://127.0.0.1:5000/`. O Flask serve a interface e a API na mesma origem.
+
+### Login com Google (RF02)
+
+O botão oficial do Google cria a conta no primeiro acesso e inicia uma sessão local. O servidor valida o token e sua audiência com `google-auth`, além do nonce da sessão. O Client ID de desenvolvimento já está configurado; para usar outro, defina `GOOGLE_CLIENT_ID` no ambiente antes de iniciar o Flask. Não é necessário Client Secret neste fluxo.
+
+As origens usadas para abrir a aplicação devem estar autorizadas no cliente Web do Google Cloud (por exemplo, `http://127.0.0.1:5000` e `http://localhost:5000`). Se o e-mail já possuir uma conta local, entre com a senha; a vinculação automática de contas não é realizada.
+
+Os testes de RF02 simulam a verificação do Google sem depender de contas ou da rede. A validação real do botão deve ser feita no navegador com uma conta Google.
 
 ## Testes
 ```bash
