@@ -15,3 +15,13 @@ class Usuario(db.Model):
 
     def to_dict(self):
         return {"id": self.id, "nome": self.nome, "email": self.email}
+
+
+class Progresso(db.Model):
+    __tablename__ = "progresso"
+    __table_args__ = (db.UniqueConstraint("usuario_id", "nivel_id"),)
+
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    nivel_id = db.Column(db.Integer, nullable=False)
+    melhor_movimentos = db.Column(db.Integer, nullable=False)

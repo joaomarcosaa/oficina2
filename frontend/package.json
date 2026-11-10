@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "jest && node --test tests/scene-motion.test.mjs",
+    "vendor:three": "node scripts/vendor-three.cjs",
+    "levels:generate": "node scripts/generate-levels.cjs"
   },
   "devDependencies": {
     "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "three": "0.186.1"
   }
 }

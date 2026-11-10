@@ -4,6 +4,7 @@ from flask import Flask, jsonify, send_from_directory
 
 from .auth import auth_bp
 from .extensions import db
+from .game import game_bp
 
 FRONTEND_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "..", "frontend")
@@ -25,6 +26,7 @@ def create_app(config=None):
 
     db.init_app(app)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(game_bp)
 
     with app.app_context():
         db.create_all()
@@ -39,7 +41,6 @@ def create_app(config=None):
     def health():
         return jsonify(status="ok")
 
-    # TODO: registrar blueprint do jogo (RF03-RF09)
     return app
 
 

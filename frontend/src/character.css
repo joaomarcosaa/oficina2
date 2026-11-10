@@ -1,0 +1,46 @@
+/* Personagem desenhado em CSS: não depende de imagens externas. */
+#grade {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 2px;
+  width: min(100%, 420px);
+  aspect-ratio: 1;
+  margin: 1rem auto;
+  background: #fff;
+  border: 2px solid #cfd8e6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+#grade .celula { width: auto; height: auto; background: #eef1f6; border-radius: 3px; }
+.personagem {
+  position: absolute;
+  width: calc((100% - 18px) / 10);
+  height: calc((100% - 18px) / 10);
+  left: calc(var(--x, 0) * (100% + 2px) / 10);
+  top: calc(var(--y, 0) * (100% + 2px) / 10);
+  transition: left 120ms ease-out, top 120ms ease-out;
+  pointer-events: none;
+}
+.robo { position: absolute; inset: 8% 10% 6%; }
+.robo-antena { position: absolute; top: 0; left: 47%; width: 6%; height: 15%; background: #26466d; }
+.robo-antena::before { content: ''; position: absolute; top: -2px; left: -2px; width: 6px; height: 6px; border-radius: 50%; background: #f5a623; }
+.robo-cabeca { position: absolute; top: 12%; left: 12%; width: 76%; height: 43%; border-radius: 25%; background: #427de0; box-shadow: inset 0 -3px #2455a2; }
+.robo-rosto { position: absolute; inset: 22% 12% 25%; border-radius: 4px; background: #dff6ff; display: flex; align-items: center; justify-content: space-evenly; }
+.robo-olho { width: 3px; height: 4px; background: #173d64; border-radius: 2px; transform: translate(var(--olhar-x, 0), var(--olhar-y, 0)); }
+.robo-corpo { position: absolute; top: 58%; left: 24%; width: 52%; height: 25%; border-radius: 3px; background: #427de0; }
+.robo-corpo::after { content: ''; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #f5a623; left: calc(50% - 2px); top: 25%; }
+.robo-braco { position: absolute; top: 60%; width: 12%; height: 22%; border-radius: 3px; background: #26466d; }
+.robo-braco.esquerdo { left: 7%; } .robo-braco.direito { right: 7%; }
+.robo-pe { position: absolute; bottom: 0; width: 20%; height: 15%; border-radius: 2px; background: #26466d; }
+.robo-pe.esquerdo { left: 26%; } .robo-pe.direito { right: 26%; }
+.personagem[data-direcao="frente"] { --olhar-y: -1px; }
+.personagem[data-direcao="tras"] { --olhar-y: 1px; }
+.personagem[data-direcao="esquerda"] { --olhar-x: -1px; }
+.personagem[data-direcao="direita"] { --olhar-x: 1px; }
+.personagem.andando .robo { animation: passo 160ms ease-in-out; }
+@keyframes passo { 50% { transform: translateY(-2px) rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .personagem { transition: none; }
+  .personagem.andando .robo { animation: none; }
+}

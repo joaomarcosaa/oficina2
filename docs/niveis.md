@@ -1,4 +1,29 @@
-# Esquema de níveis (RF08) e progresso (RF09)
+# Níveis e progresso do labirinto 3D
+
+## Campanha implementada
+
+O jogo possui dez fases, aprovadas no escopo atual. O tamanho e o comprimento mínimo do caminho até a saída crescem em todas as fases:
+
+| Fase | Tamanho | Menor caminho até a saída |
+|------|---------|--------------------------|
+| 1 | 7 × 7 | 16 movimentos |
+| 2 | 9 × 9 | 24 movimentos |
+| 3 | 11 × 11 | 38 movimentos |
+| 4 | 13 × 13 | 58 movimentos |
+| 5 | 15 × 15 | 66 movimentos |
+| 6 | 17 × 17 | 98 movimentos |
+| 7 | 19 × 19 | 106 movimentos |
+| 8 | 21 × 21 | 146 movimentos |
+| 9 | 23 × 23 | 166 movimentos |
+| 10 | 25 × 25 | 212 movimentos |
+
+Os mapas completos estão em `backend/app/levels.json`. O gerador `frontend/src/maze.js` usa busca em profundidade com semente e escolhe uma meta alcançável distante do início. A câmera fica atrás do personagem: frente/trás deslocam segundo sua orientação; direita/esquerda giram 90 graus. Bater na parede não altera posição nem pontuação. O minimapa mostra personagem, paredes e saída.
+
+Ao chegar ao portal, a interface envia os comandos para o servidor, que refaz o caminho antes de liberar a próxima fase. A conclusão fica salva por usuário na tabela `progresso`, com o melhor número de movimentos; ao entrar novamente, o usuário retoma a última fase liberada. Reiniciar não apaga fases concluídas. A fase 10 apresenta o fim da campanha, sem tentar carregar uma fase 11.
+
+O escopo implementado não inclui itens, limite de movimentos, estrelas ou tela para escolher qualquer fase; estes eram possibilidades do rascunho abaixo. No momento, a navegação avança pela campanha e permite reiniciar ou jogar novamente após a fase 10.
+
+## Rascunho anterior (referência de planejamento)
 
 ## Conceito
 Cada **nível** é uma atividade de movimentação com um objetivo: levar o personagem da posição inicial até a **meta** usando os comandos `frente`, `trás`, `direita` e `esquerda`. A dificuldade aumenta a cada nível.

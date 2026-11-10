@@ -3,78 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Personagem</title>
-  <style>
-    body { font-family: system-ui, sans-serif; text-align: center; margin: 2rem; }
-    #grade { display: grid; grid-template-columns: repeat(10, 32px); gap: 2px; justify-content: center; margin: 1rem auto; }
-    .celula { width: 32px; height: 32px; background: #eef1f6; border-radius: 4px; }
-    .personagem { background: #2f6fed; }
-    button { margin: 2px; padding: .5rem 1rem; cursor: pointer; }
-    input { margin: .25rem; padding: .4rem; width: 200px; box-sizing: border-box; }
-    .escondido { display: none; }
-    .erro { color: #c0392b; min-height: 1.2em; }
-    .cartao { max-width: 320px; margin: 1rem auto; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
-    #barra-usuario { display: flex; justify-content: center; align-items: center; gap: .5rem; margin-bottom: 1rem; }
-    .campo-senha { position: relative; display: inline-block; margin: .25rem; }
-    .campo-senha input { margin: 0; padding-right: 2.2rem; }
-    .campo-senha button {
-      position: absolute; right: .3rem; top: 50%; transform: translateY(-50%);
-      background: none; border: none; cursor: pointer; font-size: 1rem; padding: 0; margin: 0;
-    }
-  </style>
+  <title>Labirinto Game</title>
+  <link rel="stylesheet" href="src/login-theme.css">
+  <link rel="stylesheet" href="src/game.css">
 </head>
 <body>
 
-  <!-- Tela de login / cadastro (RF01) -->
-  <div id="tela-auth" class="cartao">
-    <div id="bloco-login">
-      <h2>Entrar</h2>
-      <p class="erro" id="erro-login"></p>
-      <input type="email" id="login-email" placeholder="E-mail"><br>
-      <span class="campo-senha">
-        <input type="password" id="login-senha" placeholder="Senha">
-        <button type="button" id="btn-ver-senha" title="Mostrar senha">👁</button>
-      </span><br>
-      <button id="btn-login">Entrar</button>
-      <p>Não tem conta? <a href="#" id="ir-para-cadastro">Cadastre-se</a></p>
-    </div>
-
-    <div id="bloco-cadastro" class="escondido">
-      <h2>Criar conta</h2>
-      <p class="erro" id="erro-cadastro"></p>
-      <input type="text" id="cad-nome" placeholder="Nome"><br>
-      <input type="email" id="cad-email" placeholder="E-mail"><br>
-      <span class="campo-senha">
-        <input type="password" id="cad-senha" placeholder="Senha (mín. 6 caracteres)">
-        <button type="button" id="btn-ver-senha-cadastro" title="Mostrar senha">👁</button>
-      </span><br>
-      <button id="btn-cadastro">Criar conta</button>
-      <p>Já tem conta? <a href="#" id="ir-para-login">Entrar</a></p>
-    </div>
-    <p>Ou entre com sua conta Google:</p>
-    <div id="google-login" style="display: flex; justify-content: center;"></div>
-    <p id="erro-google" class="erro" role="alert"></p>
-  </div>
+  <!-- Login e cadastro no mesmo universo visual do jogo -->
+  <main id="tela-auth" class="auth-layout">
+    <header class="auth-header">
+      <div class="auth-brand">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28"><path d="M12 3H3v22h22V3h-7v8h-7v7h7v7M3 11h4V7h5m13 11h-7m-7 7v-3M18 3v4h3"/></svg></span>
+        <div><strong>Labirinto Game</strong><small>ENCONTRE SEU CAMINHO</small></div>
+      </div>
+      <span class="auth-header-note">Uma aventura de lógica</span>
+    </header>
+    <section class="auth-showcase" aria-labelledby="showcase-titulo">
+      <p class="showcase-kicker">CADA PASSO É UMA DESCOBERTA</p>
+      <h2 id="showcase-titulo">10 fases.<br><span>Um portal de cada vez.</span></h2>
+      <p class="showcase-description">Explore os caminhos, encontre o portal azul e encare um labirinto maior a cada fase.</p>
+      <div id="login-preview-frame" class="preview-frame" aria-hidden="true">
+        <img class="preview-fallback" src="src/login-maze.svg" alt="" width="700" height="380">
+        <canvas id="login-preview" tabindex="-1"></canvas>
+        <div class="preview-phase"><strong>01</strong><span>FASE<br>DE 10</span></div>
+        <span class="preview-portal">Encontre o portal azul</span>
+      </div>
+      <div class="showcase-features"><span><b>10</b> fases para explorar</span><span><b>3D</b> visão em terceira pessoa</span><span><b>✓</b> progresso salvo</span></div>
+    </section>
+    <section class="auth-panel" aria-labelledby="auth-titulo">
+      <p id="auth-etapa" class="panel-kicker">PRONTO PARA JOGAR?</p>
+      <h1 id="auth-titulo">Entre no labirinto</h1>
+      <p id="auth-subtitulo" class="panel-description">Entre na sua conta para continuar a aventura.</p>
+      <form id="bloco-login" aria-label="Entrar na sua conta">
+        <div class="auth-fields"><div class="auth-field-group"><label for="login-email">E-mail</label><div class="auth-field"><input type="email" id="login-email" placeholder="voce@email.com" autocomplete="username" required ><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></svg></span></div></div><div class="auth-field-group"><label for="login-senha">Senha</label><div class="auth-field"><input type="password" id="login-senha" placeholder="Sua senha" autocomplete="current-password" required ><button type="button" class="password-toggle" id="btn-ver-senha" title="Mostrar senha" aria-label="Mostrar senha" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div></div>
+        <p class="erro" id="erro-login" role="alert"></p>
+      </form>
+      <form id="bloco-cadastro" class="escondido" aria-label="Criar sua conta">
+        <div class="auth-fields"><div class="auth-field-group"><label for="cad-nome">Nome</label><div class="auth-field"><input type="text" id="cad-nome" placeholder="Como podemos te chamar?" autocomplete="name" required ><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span></div></div><div class="auth-field-group"><label for="cad-email">E-mail</label><div class="auth-field"><input type="email" id="cad-email" placeholder="voce@email.com" autocomplete="email" required ><span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 7 9-7"/></svg></span></div></div><div class="auth-field-group"><label for="cad-senha">Senha</label><div class="auth-field"><input type="password" id="cad-senha" placeholder="Pelo menos 6 caracteres" autocomplete="new-password" required minlength="6"><button type="button" class="password-toggle" id="btn-ver-senha-cadastro" title="Mostrar senha" aria-label="Mostrar senha" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div></div>
+        <p class="erro" id="erro-cadastro" role="alert"></p>
+      </form>
+      <button id="btn-login" class="auth-submit" type="submit" form="bloco-login">Entrar</button>
+      <button id="btn-cadastro" class="auth-submit escondido" type="submit" form="bloco-cadastro">Criar conta</button>
+      <div class="auth-divider">ou continue com</div>
+      <div class="google-area">
+        <div id="google-login" aria-label="Entrar com Google"></div>
+        <p id="erro-google" class="erro" role="alert"></p>
+      </div>
+      <p id="rodape-login" class="auth-footer">Ainda não tem conta? <a href="#" id="ir-para-cadastro">Crie sua conta</a></p>
+      <p id="rodape-cadastro" class="auth-footer">Já tem uma conta? <a href="#" id="ir-para-login">Entrar no jogo</a></p>
+    </section>
+    <footer class="auth-page-footer"><span>Aprenda lógica. Explore. Encontre a saída.</span><span>Labirinto Game · Projeto ELLP</span></footer>
+  </main>
 
   <!-- Tela do jogo (só aparece depois de logado) -->
   <div id="tela-jogo" class="escondido">
-    <div id="barra-usuario">
-      <span>Olá, <strong id="nome-usuario"></strong>!</span>
-      <button id="btn-sair">Sair</button>
+    <canvas id="jogo-canvas" tabindex="0" aria-label="Labirinto 3D com câmera atrás do personagem. Use as setas para jogar."></canvas>
+    <div class="game-hud">
+      <header class="game-top">
+        <div class="fase-card">
+          <span class="fase-icon" aria-hidden="true">▧</span>
+          <div><small>SUA AVENTURA</small><h2>FASE <span id="fase-numero">01</span> <em>/ 10</em></h2><div id="dimensao-fase">Preparando labirinto</div></div>
+        </div>
+        <div class="game-brand"><strong>Labirinto Game</strong><small>ENCONTRE SEU CAMINHO</small></div>
+        <div class="game-top-actions">
+          <button id="alternar-mapa" class="game-button" aria-expanded="true" aria-controls="map-panel">Mapa · M</button>
+          <button id="reiniciar" class="game-button">Reiniciar</button>
+          <button id="btn-sair" class="game-button">Sair</button>
+        </div>
+      </header>
+      <aside id="map-panel" class="map-panel" aria-label="Mapa da fase">
+        <small>SEU CAMINHO</small>
+        <canvas id="minimapa" width="280" height="280" aria-label="Mapa: personagem em branco e saída em azul"></canvas>
+        <div class="map-legend"><span>Você</span><span>Saída</span></div>
+      </aside>
+      <p id="game-status" role="status" aria-live="polite">Preparando o labirinto…</p>
+      <div class="game-bottom">
+        <div class="player-info"><span class="avatar-dot" aria-hidden="true"></span><strong id="nome-usuario"></strong><p><span id="movimentos-jogo">0</span> movimentos</p></div>
+        <div class="game-instructions" id="instrucoes"><p>Encontre o portal <span style="color:#6ce9ff">azul</span> para avançar</p><small><kbd>↑</kbd><kbd>↓</kbd> andar &nbsp; <kbd>←</kbd><kbd>→</kbd> virar · WASD também funciona</small></div>
+        <div class="game-pad" role="group" aria-label="Controles do personagem">
+          <button data-cmd="frente" aria-label="Andar para frente" title="Andar para frente">↑</button>
+          <button data-cmd="esquerda" aria-label="Virar à esquerda" title="Virar à esquerda">↶</button>
+          <button data-cmd="tras" aria-label="Andar para trás" title="Andar para trás">↓</button>
+          <button data-cmd="direita" aria-label="Virar à direita" title="Virar à direita">↷</button>
+        </div>
+      </div>
     </div>
-
-    <p id="instrucoes">Use as setas do teclado ou os botões para mover o personagem.</p>
-    <div id="grade"></div>
-    <div>
-      <button data-cmd="frente">⬆ Frente</button><br>
-      <button data-cmd="esquerda">⬅ Esquerda</button>
-      <button data-cmd="tras">⬇ Trás</button>
-      <button data-cmd="direita">➡ Direita</button>
-    </div>
-    <button id="reiniciar">Reiniciar</button>
+    <p id="posicao-personagem" class="sr-only" role="status" aria-live="polite"></p>
+    <dialog id="fase-dialog" class="phase-dialog" aria-labelledby="conclusao-titulo" aria-describedby="conclusao-texto">
+      <span class="portal-symbol" aria-hidden="true">✓</span>
+      <h2 id="conclusao-titulo">Fase concluída!</h2>
+      <p id="conclusao-texto"></p>
+      <p id="salvar-status" role="status"></p>
+      <button id="proxima-fase" class="primary-button" disabled>Próxima fase</button>
+      <button id="tentar-salvar" class="game-button escondido">Tentar salvar novamente</button>
+      <button id="refazer-fase" class="game-button">Refazer esta fase</button>
+    </dialog>
   </div>
 
-  <script src="src/movement.js"></script>
+  <script src="src/maze.js"></script>
   <script>
     // ---------- Elementos ----------
     const telaAuth = document.getElementById("tela-auth");
@@ -101,16 +127,37 @@
       return dados;
     }
 
-    function mostrarJogo(usuario) {
+    let jogo3d, previewLogin;
+    let versaoAuth = 0;
+    async function iniciarArteLogin() {
+      const versao = ++versaoAuth;
+      try {
+        previewLogin = previewLogin || await import('./src/login-preview.js');
+        if (versao === versaoAuth && !telaAuth.classList.contains("escondido")) previewLogin.ativarPreview();
+      } catch {
+        // A ilustração estática permanece disponível se o navegador não carregar a prévia.
+      }
+    }
+    async function mostrarJogo(usuario) {
+      versaoAuth++;
+      previewLogin?.pausarPreview();
       nomeUsuarioEl.textContent = usuario.nome;
       telaAuth.classList.add("escondido");
       telaJogo.classList.remove("escondido");
-      desenhar();
+      try {
+        jogo3d = jogo3d || await import('./src/game.js');
+        if (!telaJogo.classList.contains("escondido")) await jogo3d.iniciar(usuario, chamarApi);
+      } catch (erro) {
+        document.getElementById("game-status").textContent = "Não foi possível carregar o jogo. Atualize a página para tentar novamente.";
+        console.error(erro);
+      }
     }
 
     function mostrarAuth() {
+      jogo3d?.parar();
       telaJogo.classList.add("escondido");
       telaAuth.classList.remove("escondido");
+      iniciarArteLogin();
     }
 
     // Ao carregar a página, verifica se já existe uma sessão ativa (RF: manter login)
@@ -137,6 +184,7 @@
         });
         google.accounts.id.renderButton(document.getElementById("google-login"), {
           theme: "outline", size: "large", text: "signin_with", locale: "pt-BR",
+          shape: "rectangular", width: Math.min(320, document.getElementById("google-login").clientWidth || 320),
         });
       } catch (e) {
         document.getElementById("erro-google").textContent = "Não foi possível carregar o login com Google. Recarregue a página.";
@@ -152,15 +200,29 @@
     document.head.appendChild(bibliotecaGoogle);
 
     // ---------- Alternar entre login e cadastro ----------
+    function mostrarFormulario(cadastro) {
+      blocoLogin.classList.toggle("escondido", cadastro);
+      blocoCadastro.classList.toggle("escondido", !cadastro);
+      document.getElementById("btn-login").classList.toggle("escondido", cadastro);
+      document.getElementById("btn-cadastro").classList.toggle("escondido", !cadastro);
+      document.getElementById("rodape-login").classList.toggle("escondido", cadastro);
+      document.getElementById("rodape-cadastro").classList.toggle("escondido", !cadastro);
+      document.getElementById("auth-titulo").textContent = cadastro ? "Comece sua aventura" : "Entre no labirinto";
+      document.getElementById("auth-etapa").textContent = cadastro ? "SEU PRIMEIRO PASSO" : "PRONTO PARA JOGAR?";
+      document.getElementById("auth-subtitulo").textContent = cadastro
+        ? "Crie sua conta e descubra os dez labirintos."
+        : "Entre na sua conta para continuar a aventura.";
+      erroLogin.textContent = "";
+      erroCadastro.textContent = "";
+      document.getElementById(cadastro ? "cad-nome" : "login-email").focus();
+    }
     document.getElementById("ir-para-cadastro").addEventListener("click", (e) => {
       e.preventDefault();
-      blocoLogin.classList.add("escondido");
-      blocoCadastro.classList.remove("escondido");
+      mostrarFormulario(true);
     });
     document.getElementById("ir-para-login").addEventListener("click", (e) => {
       e.preventDefault();
-      blocoCadastro.classList.add("escondido");
-      blocoLogin.classList.remove("escondido");
+      mostrarFormulario(false);
     });
 
     // ---------- Mostrar/ocultar senha ----------
@@ -169,8 +231,9 @@
     btnVerSenha.addEventListener("click", () => {
       const mostrando = campoSenha.type === "text";
       campoSenha.type = mostrando ? "password" : "text";
-      btnVerSenha.textContent = mostrando ? "👁" : "🙈";
       btnVerSenha.title = mostrando ? "Mostrar senha" : "Ocultar senha";
+      btnVerSenha.setAttribute("aria-label", btnVerSenha.title);
+      btnVerSenha.setAttribute("aria-pressed", String(!mostrando));
     });
 
     const btnVerSenhaCadastro = document.getElementById("btn-ver-senha-cadastro");
@@ -178,13 +241,19 @@
     btnVerSenhaCadastro.addEventListener("click", () => {
       const mostrando = campoSenhaCadastro.type === "text";
       campoSenhaCadastro.type = mostrando ? "password" : "text";
-      btnVerSenhaCadastro.textContent = mostrando ? "👁" : "🙈";
       btnVerSenhaCadastro.title = mostrando ? "Mostrar senha" : "Ocultar senha";
+      btnVerSenhaCadastro.setAttribute("aria-label", btnVerSenhaCadastro.title);
+      btnVerSenhaCadastro.setAttribute("aria-pressed", String(!mostrando));
     });
 
     // ---------- Login ----------
-    document.getElementById("btn-login").addEventListener("click", async () => {
+    blocoLogin.addEventListener("submit", async (e) => {
+      e.preventDefault();
       erroLogin.textContent = "";
+      const botao = document.getElementById("btn-login");
+      if (botao.disabled) return;
+      botao.disabled = true;
+      botao.textContent = "Entrando…";
       const email = document.getElementById("login-email").value.trim();
       const senha = document.getElementById("login-senha").value;
       try {
@@ -195,12 +264,20 @@
         mostrarJogo(usuario);
       } catch (erro) {
         erroLogin.textContent = erro.message;
+      } finally {
+        botao.disabled = false;
+        botao.textContent = "Entrar";
       }
     });
 
     // ---------- Cadastro (RF01) ----------
-    document.getElementById("btn-cadastro").addEventListener("click", async () => {
+    blocoCadastro.addEventListener("submit", async (e) => {
+      e.preventDefault();
       erroCadastro.textContent = "";
+      const botao = document.getElementById("btn-cadastro");
+      if (botao.disabled) return;
+      botao.disabled = true;
+      botao.textContent = "Criando…";
       const nome = document.getElementById("cad-nome").value.trim();
       const email = document.getElementById("cad-email").value.trim();
       const senha = document.getElementById("cad-senha").value;
@@ -218,6 +295,9 @@
       } catch (erro) {
         const detalhes = erro.detalhes ? Object.values(erro.detalhes).join(" ") : "";
         erroCadastro.textContent = detalhes || erro.message;
+      } finally {
+        botao.disabled = false;
+        botao.textContent = "Criar conta";
       }
     });
 
@@ -228,31 +308,6 @@
       iniciarGoogle();
     });
 
-    // ---------- Jogo (RF03-RF06) ----------
-    const L = { largura: 10, altura: 10 };
-    const inicio = { x: 0, y: 0 };
-    let pos = { ...inicio };
-    const grade = document.getElementById("grade");
-
-    function desenhar() {
-      grade.innerHTML = "";
-      for (let y = 0; y < L.altura; y++)
-        for (let x = 0; x < L.largura; x++) {
-          const c = document.createElement("div");
-          c.className = "celula" + (x === pos.x && y === pos.y ? " personagem" : "");
-          grade.appendChild(c);
-        }
-    }
-    function executar(cmd) { pos = mover(pos, cmd, L); desenhar(); }
-
-    document.querySelectorAll("[data-cmd]").forEach(b =>
-      b.addEventListener("click", () => executar(b.dataset.cmd)));
-    document.addEventListener("keydown", e => {
-      if (telaJogo.classList.contains("escondido")) return; // só move se o jogo estiver visível
-      const cmd = teclaParaComando(e.key);
-      if (cmd) { e.preventDefault(); executar(cmd); }
-    });
-    document.getElementById("reiniciar").addEventListener("click", () => { pos = { ...inicio }; desenhar(); });
   </script>
 </body>
 </html>

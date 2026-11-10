@@ -15,11 +15,11 @@ Ferramenta visual para programação de um pequeno personagem que se move pela t
 
 | Parte | Tecnologia | Para que serve no projeto |
 |-------|-----------|---------------------------|
-| Front-end | HTML e JavaScript | Tela do jogo, botões de comando, captura das setas do teclado e animação do personagem |
-| Back-end | Python | API do sistema: cadastro e login de usuários, regras do jogo e salvamento do progresso |
-| Banco de dados | SQLite ou PostgreSQL | Guardar usuários e progresso. SQLite é mais simples para começar; PostgreSQL é mais robusto |
+| Front-end | HTML, CSS, JavaScript e Three.js | Login e labirinto 3D com câmera atrás do personagem |
+| Back-end | Python com Flask | API de cadastro, autenticação, validação de conclusão e progresso |
+| Banco de dados | SQLite com Flask-SQLAlchemy | Guardar usuários e resultados por fase |
 | Autenticação | Login com Google (OAuth 2.0) | Permitir entrar com uma conta Google (RF02) |
-| Testes automatizados | Pytest (Python) e Jest (JavaScript) | Testar o back-end e o front-end |
+| Testes automatizados | Pytest, Jest e node:test | Testar API, regras, fases, animação e câmera |
 | Versionamento | Git e GitHub | Trabalho em equipe e histórico do código |
 
 ## Estrutura do repositório
@@ -36,12 +36,23 @@ Ferramenta visual para programação de um pequeno personagem que se move pela t
 ## Como rodar
 
 ### Back-end
-```bash
+
+No Windows PowerShell:
+
+```powershell
 cd backend
 python -m venv .venv
-.venv\Scripts\activate ou source .venv/bin/activate 
-pip install -r requirements.txt
-flask --app app.main run --debug
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m flask --app app.main run --debug
+```
+
+No Linux ou macOS:
+
+```bash
+cd backend
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m flask --app app.main run --debug
 ```
 API em `http://127.0.0.1:5000` (teste: `/health`).
 
@@ -57,13 +68,57 @@ As origens usadas para abrir a aplicação devem estar autorizadas no cliente We
 Os testes de RF02 simulam a verificação do Google sem depender de contas ou da rede. A validação real do botão deve ser feita no navegador com uma conta Google.
 
 ## Testes
+
+No Windows PowerShell, a partir da raiz do repositório:
+
+```powershell
+Push-Location backend
+.\.venv\Scripts\python.exe -m pytest
+Pop-Location
+Push-Location frontend
+npm ci
+npm test
+Pop-Location
+```
+
+No Linux ou macOS:
+
 ```bash
 # Back-end
-cd backend && pytest
+cd backend
+.venv/bin/python -m pytest
 
 # Front-end
-cd frontend && npm install && npm test
+cd ../frontend
+npm ci
+npm test
 ```
+
+Node.js 20 ou superior é utilizado nos testes e scripts JavaScript. A interface é servida pelo Flask; os módulos Three.js necessários já acompanham o repositório em `frontend/vendor`.
+
+## Banco de dados local
+
+Na primeira execução, a aplicação cria as tabelas em `backend/instance/dados.db`. Esse arquivo não é enviado ao GitHub. Cada clone novo começa sem usuários nem progresso, mantendo as dez fases disponíveis no código. Reiniciar o servidor preserva o banco existente. O login Google identifica a conta; o progresso é armazenado no banco desta instalação.
+
+## Guias técnicos
+
+- [Versão atual do jogo 3D](docs/guia-versao-atual.md).
+- [Protótipo 2D histórico](docs/guia-apresentacao-prototipo.md).
+- [Arquitetura e responsabilidades](docs/arquitetura.md).
+
+## Labirinto 3D
+
+Após entrar, o jogo retoma a última fase liberada da conta. São dez labirintos com tamanho crescente, de 7 × 7 até 25 × 25 casas. A saída é um portal azul; ao alcançá-lo, o servidor valida o caminho, salva o progresso no SQLite e libera a próxima fase. Na fase 10, o jogo apresenta a conclusão da campanha e permite jogar novamente.
+
+- **↑ / W:** andar para frente; **↓ / S:** andar para trás.
+- **← / A** e **→ / D:** virar à esquerda e à direita. Os comandos são relativos à orientação do personagem.
+- Os botões na tela também permitem jogar por toque.
+- **M / Mapa:** mostrar ou ocultar o minimapa. Branco indica o personagem; azul indica a saída.
+- **Reiniciar:** refazer a fase atual, sem apagar fases concluídas.
+
+O número da fase fica no canto superior esquerdo. O modo 3D usa WebGL 2 e precisa de aceleração gráfica no navegador. O Three.js está versionado em `frontend/vendor`, com licença MIT; o jogo não depende de CDN. Para atualizar essa cópia depois de instalar dependências, execute `npm run vendor:three` em `frontend`.
+
+As definições das fases ficam em `backend/app/levels.json`. O gerador determinístico e as regras testáveis ficam em `frontend/src/maze.js`; `npm run levels:generate` recria os mesmos dez labirintos. O back-end valida a conclusão percorrendo a sequência de comandos, não confiando na posição enviada pelo cliente.
 
 
 ## Arquitetura

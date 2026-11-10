@@ -1,0 +1,84 @@
+#tela-jogo, #tela-jogo * { box-sizing: border-box; }
+#tela-jogo {
+  position: relative; width: 100%; height: 100svh; min-height: 540px;
+  overflow: hidden; padding: 0; color: #f4ecff; background: #100421;
+  font-family: system-ui, sans-serif; text-align: left;
+}
+#jogo-canvas { width: 100%; height: 100%; display: block; outline: none; }
+.game-hud { position: absolute; inset: 0; pointer-events: none; padding: 26px 30px; }
+.game-hud button, .game-hud a { pointer-events: auto; }
+.game-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.fase-card {
+  display: flex; align-items: center; gap: 16px; padding: 16px 22px; border-radius: 16px;
+  border: 1px solid #744391; background: #1c092be8; box-shadow: -3px 0 0 #d42dcd, 0 8px 35px #0004;
+}
+.fase-icon { display: grid; place-items: center; width: 38px; height: 38px; color: #56e8f6; font-size: 27px; }
+.fase-card small { display: block; color: #b5a0c8; font-size: 10px; letter-spacing: 2px; font-weight: 700; }
+.fase-card h2 { margin: 2px 0; font-size: 25px; font-weight: 700; letter-spacing: -.7px; }
+.fase-card h2 span { color: #6ce9ff; }
+.fase-card h2 em { font-style: normal; font-size: 14px; color: #a78cbb; font-weight: 400; }
+#dimensao-fase { color: #ac91bd; font-size: 11px; }
+.game-brand { padding-top: 10px; text-align: center; }
+.game-brand strong { font: 700 23px 'Segoe Print', 'Comic Sans MS', cursive; }
+.game-brand small { display: block; font-size: 9px; letter-spacing: 3px; color: #aa88c0; margin-top: 4px; }
+.game-top-actions { display: flex; gap: 8px; }
+#tela-jogo .game-button {
+  margin: 0; padding: 11px 16px; min-height: 42px; font: 600 12px system-ui, sans-serif;
+  color: #e5cff6; border: 1px solid #694582; background: #1c092beb; border-radius: 10px;
+}
+#tela-jogo .game-button:hover { border-color: #49d2e7; color: #8defff; background: #30204a; }
+#tela-jogo :focus-visible { outline: 3px solid #66e2ff; outline-offset: 4px; }
+.map-panel { position: absolute; right: 30px; top: 96px; width: 166px; padding: 12px; border: 1px solid #533768; border-radius: 14px; background: #170927ed; text-align: center; pointer-events: auto; }
+.map-panel small { display: block; font-size: 9px; letter-spacing: 2px; color: #bfa9d3; margin-bottom: 8px; }
+#minimapa { display: block; width: 140px; height: 140px; image-rendering: pixelated; }
+.map-legend { margin-top: 9px; display: flex; gap: 12px; justify-content: center; color: #b6a4c6; font-size: 9px; }
+.map-legend span::before { content: ''; display: inline-block; width: 5px; height: 5px; margin-right: 4px; border-radius: 50%; background: #fff; }
+.map-legend span:last-child::before { background: #26dce9; }
+.game-bottom { position: absolute; bottom: 26px; left: 30px; right: 30px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 20px; }
+.player-info { color: #bca4ce; font-size: 12px; }
+.player-info strong { color: #eee0ff; }
+.player-info .avatar-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #50dfce; margin-right: 7px; box-shadow: 0 0 8px #22d9ba66; }
+.player-info p { margin: 8px 0 0; font-size: 11px; }
+.game-instructions { text-align: center; padding: 12px 18px; border: 1px solid #533368; border-radius: 12px; background: #160824db; }
+.game-instructions p { margin: 0; font-size: 12px; color: #e6d1f5; }
+.game-instructions small { display: block; color: #a990bb; font-size: 10px; margin-top: 7px; }
+.game-instructions kbd { display: inline-grid; place-items: center; min-width: 21px; height: 21px; margin: 0 2px; border: 1px solid #684484; border-radius: 5px; background: #33144c; color: #80e3f5; font: 12px system-ui; }
+.game-pad { display: grid; grid-template-columns: repeat(3, 42px); grid-template-rows: repeat(2, 42px); gap: 5px; justify-content: end; touch-action: none; }
+#tela-jogo .game-pad button { margin: 0; padding: 0; border: 1px solid #836095; border-radius: 10px; background: #2b1044eb; color: #d2f6ff; font-size: 22px; touch-action: none; user-select: none; }
+#tela-jogo .game-pad button:active { background: #734498; border-color: #57d9ef; }
+.game-pad [data-cmd="frente"] { grid-column: 2; }
+.game-pad [data-cmd="esquerda"] { grid-column: 1; grid-row: 2; }
+.game-pad [data-cmd="tras"] { grid-column: 2; grid-row: 2; }
+.game-pad [data-cmd="direita"] { grid-column: 3; grid-row: 2; }
+#game-status { position: absolute; top: 160px; left: 30px; max-width: min(420px, 80vw); margin: 0; color: #ebd5ff; font-size: 12px; text-shadow: 0 2px 5px #000; }
+#game-status:empty { display: none; }
+.phase-dialog { max-width: min(440px, calc(100vw - 32px)); width: 440px; padding: 36px; color: #fff; border: 1px solid #9a52bf; border-radius: 22px; background: linear-gradient(145deg, #421068, #1a072e); text-align: center; box-shadow: 0 0 70px #b42bdb30; }
+.phase-dialog::backdrop { background: #0b021ac9; backdrop-filter: blur(5px); }
+.phase-dialog .portal-symbol { display: inline-grid; place-items: center; width: 64px; height: 64px; border: 2px solid #55eaff; border-radius: 50%; color: #73eaff; font-size: 32px; box-shadow: 0 0 24px #15d5f333; }
+.phase-dialog h2 { margin: 22px 0 10px; font-size: 28px; }
+.phase-dialog p { font-size: 14px; line-height: 1.7; color: #c9b0de; }
+#tela-jogo .phase-dialog .primary-button { padding: 13px 24px; width: 100%; margin-top: 14px; border: 0; border-radius: 10px; color: #210e38; background: #9ae9ff; font-weight: 700; font-size: 14px; }
+#tela-jogo .phase-dialog button:disabled { opacity: .55; cursor: wait; }
+.phase-dialog .game-button { margin-top: 10px !important; width: 100%; }
+.phase-dialog #salvar-status { color: #f8b2e3; font-size: 12px; }
+@media (max-width: 800px) {
+  .game-hud { padding: 16px; }
+  .fase-card { padding: 12px 15px; gap: 8px; }
+  .fase-card h2 { font-size: 22px; }
+  .game-brand { display: none; }
+  .game-top-actions { flex-wrap: wrap; justify-content: end; max-width: 190px; }
+  #tela-jogo .game-button { padding: 9px 11px; font-size: 11px; }
+  .map-panel { right: 16px; top: 112px; width: 130px; padding: 10px; }
+  #minimapa { width: 108px; height: 108px; }
+  .game-bottom { left: 16px; right: 16px; bottom: 20px; grid-template-columns: 1fr auto; gap: 14px; }
+  .game-instructions { grid-row: 1; grid-column: 1 / -1; justify-self: center; }
+  .player-info { grid-row: 2; }
+  .game-pad { grid-row: 2; }
+  #game-status { left: 16px; top: 126px; max-width: calc(100vw - 172px); }
+}
+@media (max-height: 600px) and (min-width: 700px) {
+  #tela-jogo { min-height: 360px; }
+  .game-hud { padding-top: 12px; }
+  .game-bottom { bottom: 12px; }
+  .map-panel { top: 84px; }
+}

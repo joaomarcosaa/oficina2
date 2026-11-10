@@ -27,6 +27,20 @@ flowchart TD
 
 ## Componentes
 
+### Implementação do labirinto 3D
+
+- `frontend/src/scene3d.js`: cena Three.js, personagem articulado, câmera em terceira pessoa, iluminação roxa/ciano e portal de saída.
+- `frontend/src/scene-motion.mjs`: passos com chegada exata aos centros das casas, rotação temporal e colisão do braço da câmera. Paredes sólidas são desenhadas em instâncias, sem recorte por visibilidade; a câmera se ajusta aos obstáculos sem esconder blocos.
+- `frontend/src/maze.js`: movimento relativo ao personagem, colisões e geração determinística das dez fases.
+- `frontend/src/game.js`: controles por setas/WASD/toque, HUD, minimapa, carregamento de fases e persistência via API.
+- `backend/app/levels.json`: fonte versionada dos dez mapas (7 × 7 a 25 × 25), com início, meta e caminho mínimo crescente.
+- `backend/app/game.py`: autenticação obrigatória, bloqueio de fases futuras e validação da sequência completa de comandos antes de registrar a conclusão.
+- Tabela `progresso`: `id`, `usuario_id`, `nivel_id`, `melhor_movimentos`, com unicidade por usuário e fase. O nível liberado é derivado das fases concluídas; uma repetição mantém o menor número de movimentos.
+
+O navegador calcula movimento e colisão para resposta imediata; o servidor repete essa validação no salvamento. A câmera fica atrás do personagem e acompanha sua orientação. Não é salvo o ponto exato de uma tentativa interrompida, somente a conclusão das fases e o melhor resultado. A tabela é criada pelo `db.create_all()` sem modificar os usuários existentes.
+
+Rotas implementadas do jogo: `GET /game/progress`, `GET /game/levels/<id>` e `POST /game/levels/<id>/complete`, com JSON `{ "comandos": ["frente", "direita", ...] }`. As demais rotas abaixo são propostas anteriores, não necessárias ao movimento local.
+
 | Componente | Responsabilidade | Requisitos |
 |-----------|------------------|-----------|
 | UI / Tela do Jogo | Renderizar o personagem, a grade, botões, instruções e botão de reiniciar | RF03, RF05, RF06, RF07, RF08 (seleção de níveis) |
