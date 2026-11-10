@@ -8,7 +8,7 @@ Ferramenta visual para programação de um pequeno personagem que se move pela t
 |------|--------|
 | JOAO MARCOS ARAUJO | @joaomarcosaa |
 | ROMULO AUGUSTO | @RotyDPD |
-| GABRIEL DEROLDO | @ |
+| GABRIEL DEROLDO | @Deroldo-21 |
 | GABRIEL SUMIDA | @ |
 
 ## Tecnologias
